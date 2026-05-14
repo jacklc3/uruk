@@ -5,14 +5,19 @@
 -- * Γ ('groundCtx') — the non-linear context, mapping identifiers to
 --   'GroundType'. Variables in Γ may be used freely.
 --
--- * Δ ('compCtx')   — the linear computation context, mapping identifiers
+-- * Δ ('compCtx') — the linear computation context, mapping identifiers
 --   to 'CompType'. Variables in Δ must be used exactly once across binary
---   typing rules; 'splitLinear' partitions Δ at those rules.
+--   typing rules; 'splitLinear' (Milestone 2) will partition Δ at those
+--   rules.
 --
--- This split is the syntactic embodiment of the LNL discipline. Real
--- implementations land in Milestone 1 (Γ alone, for STLC) and Milestone 2
--- (the full Γ; Δ split with linear partitioning).
-module Inference.Context where
+-- Milestone 1 uses only Γ; Δ stays in the record so that Milestone 2 can
+-- extend the elaborator without churning the type of 'Env' everywhere.
+module Inference.Context
+  ( Env (..)
+  , emptyEnv
+  , extendGround
+  , lookupGround
+  ) where
 
 import qualified Data.Map.Strict as Map
 
@@ -28,3 +33,13 @@ data Env = Env
 -- | Empty context.
 emptyEnv :: Env
 emptyEnv = Env { groundCtx = Map.empty, compCtx = Map.empty }
+
+-- | Extend Γ with a fresh binding. Shadowing is permitted: a later
+-- binding for the same identifier hides the earlier one.
+extendGround :: Ident -> GroundType -> Env -> Env
+extendGround x t env =
+  env { groundCtx = Map.insert x t (groundCtx env) }
+
+-- | Look up an identifier in Γ.
+lookupGround :: Ident -> Env -> Maybe GroundType
+lookupGround x env = Map.lookup x (groundCtx env)

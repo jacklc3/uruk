@@ -9,33 +9,50 @@
 --   live under a symmetric monoidal discipline; variables in the computation
 --   context must be used exactly once.
 --
--- The two sorts are connected by the lifts @J : Ground → Comp@ and
--- @R : Comp → Ground@, and grades are themselves first-class types in the
--- computation sort.
---
--- v0 ships only with the @(ℕ, +, 0)@ grade theory and a single built-in
--- graded primitive (@tick@); the surface syntax for everything else is
--- present but the implementations are stubs.
+-- Milestone 1 implements only 'GroundType'. 'CompType' and 'Grade' remain
+-- stubs until Milestones 2 and 3 respectively.
 module Types where
 
 -- | Identifiers (variable names, eventually operation names).
 type Ident = String
 
 -- | Non-linear, Cartesian closed type sort (paper: 𝒜).
---
--- Real constructors (@GUnit@, @GProd@, @GArr@, @GR@, @GComp@) will be added in
--- Milestone 1 and Milestone 2. For Milestone 0 a single stub keeps the module
--- well-formed without forcing premature design choices.
-data GroundType = GroundTypeStub
-  deriving (Eq, Show)
+data GroundType
+  = GUnit
+    -- ^ The unit type, @Unit@.
+  | GProd GroundType GroundType
+    -- ^ Cartesian product, @A * B@.
+  | GArr GroundType GroundType
+    -- ^ Non-linear function type, @A -> B@.
+  deriving Eq
 
--- | Linear, symmetric-monoidal-closed type sort (paper: C).
+-- | Linear, symmetric-monoidal-closed type sort (paper: C). Stub until
+-- Milestone 2.
 data CompType = CompTypeStub
   deriving (Eq, Show)
 
--- | First-class grades, inhabiting the computation sort as types.
---
--- v0 instantiates the grade theory to @(ℕ, +, 0)@; later milestones make
--- this pluggable.
+-- | First-class grades, inhabiting the computation sort as types. Stub until
+-- Milestone 3.
 data Grade = GradeStub
   deriving (Eq, Show)
+
+-- | Custom 'Show' for 'GroundType' so error messages and test expectations
+-- read naturally. Parenthesises to keep the printed form unambiguous.
+--
+-- Precedence levels used by 'showsPrecGT':
+--
+--   * 0 — top-level
+--   * 1 — left of @->@ (since @->@ is right-associative)
+--   * 2 — left of @*@   (since @*@  is right-associative)
+--   * 3 — atomic
+instance Show GroundType where
+  showsPrec p t = showsPrecGT p t
+
+showsPrecGT :: Int -> GroundType -> ShowS
+showsPrecGT _ GUnit        = showString "Unit"
+showsPrecGT p (GProd a b)  =
+  showParen (p > 2) $
+    showsPrecGT 3 a . showString " * " . showsPrecGT 2 b
+showsPrecGT p (GArr a b)   =
+  showParen (p > 1) $
+    showsPrecGT 2 a . showString " -> " . showsPrecGT 1 b

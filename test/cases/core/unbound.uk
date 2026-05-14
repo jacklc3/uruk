@@ -1,0 +1,4 @@
+-- Free variables must produce a type error.
+-- @expect-error: unbound variable: x
+
+x

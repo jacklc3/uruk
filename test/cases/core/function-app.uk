@@ -1,0 +1,5 @@
+-- Applying the identity on Unit reduces to ().
+-- @expect-type: Unit
+-- @expect-value: ()
+
+(fun (x : Unit) -> x) ()

@@ -1,0 +1,5 @@
+-- snd of a pair returns the second component.
+-- @expect-type: Unit
+-- @expect-value: ()
+
+snd (fun (x : Unit) -> x, ())

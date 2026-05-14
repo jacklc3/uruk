@@ -1,0 +1,5 @@
+-- Currying: a function of two unit arguments returning the first.
+-- @expect-type: Unit -> Unit -> Unit
+-- @expect-value: <fun>
+
+fun (x : Unit) -> fun (y : Unit) -> x

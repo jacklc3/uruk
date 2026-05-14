@@ -1,0 +1,5 @@
+-- The identity function on Unit.
+-- @expect-type: Unit -> Unit
+-- @expect-value: <fun>
+
+fun (x : Unit) -> x

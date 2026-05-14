@@ -1,0 +1,6 @@
+-- A higher-order function: takes a function and applies it.
+-- Tests that arrow types in parameter annotations parse and check.
+-- @expect-type: (Unit -> Unit) -> Unit -> Unit
+-- @expect-value: <fun>
+
+fun (f : Unit -> Unit) -> fun (x : Unit) -> f x

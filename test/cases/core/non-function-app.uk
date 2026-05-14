@@ -1,0 +1,4 @@
+-- Applying a non-function value should be rejected.
+-- @expect-error: applied non-function
+
+() ()

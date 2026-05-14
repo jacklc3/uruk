@@ -1,0 +1,5 @@
+-- A pair literal of two units.
+-- @expect-type: Unit * Unit
+-- @expect-value: ((), ())
+
+((), ())

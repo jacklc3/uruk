@@ -1,0 +1,6 @@
+-- Applying the identity-on-Unit to a function rather than a unit
+-- should be rejected: the checker meets the inner lambda where Unit was
+-- expected and reports the structural mismatch directly.
+-- @expect-error: lambda used where a non-function type
+
+(fun (x : Unit) -> x) (fun (y : Unit) -> y)

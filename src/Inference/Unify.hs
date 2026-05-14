@@ -1,23 +1,19 @@
 -- | Unification of types.
 --
 -- For v0 the type language is fully concrete (no type variables beyond
--- grade meta-variables) so unification reduces to structural equality.
--- The module exists to mirror Cambria's layout and to give v1 a place to
--- expand once grade polymorphism arrives.
---
--- Real implementation lands in Milestone 1.
-module Inference.Unify where
+-- grade meta-variables, which only appear from Milestone 3 onwards) so
+-- unification reduces to structural equality. The module exists to mirror
+-- Cambria's layout and to give later milestones a place to expand once
+-- meta-variables arrive.
+module Inference.Unify (unify) where
 
-import Inference.Monad (Infer, TypeError)
+import Inference.Monad (Infer, typeError)
 import Inference.Substitutable (Subst, emptySubst)
 
 -- | Unify two values, producing a substitution that makes them equal.
--- For Milestone 0 a stub specialised to plain structural equality, with the
--- substitution component carrying nothing useful yet.
+-- For Milestone 1 this is just an equality check; the returned
+-- substitution is empty.
 unify :: (Eq a, Show a) => a -> a -> Infer (Subst ())
 unify a b
-  | a == b    = Right emptySubst
-  | otherwise = Left (mismatch a b)
-
-mismatch :: (Show a) => a -> a -> TypeError
-mismatch a b = "cannot unify " ++ show a ++ " with " ++ show b
+  | a == b    = pure emptySubst
+  | otherwise = typeError $ "cannot unify " ++ show a ++ " with " ++ show b
